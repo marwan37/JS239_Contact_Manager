@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Contact Manager</title>
+    <link rel="stylesheet" href="stylesheets/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/handlebars.js"></script>
+  </head>
+  <body>
+    <header class="banner">
+      <h1>Contact Manager</h1>
+    </header>
+
+    <div class="container">
+      <div class="inner-container search">
+        <div class="add-box">
+          <button id="new-contact" class="add"><i class="add fa-solid fa-plus"></i> New Contact</button>
+        </div>
+
+        <div class="search-box">
+          <input class="searchInput" type="text" name="search" placeholder="Search" autocomplete="off" />
+          <button class="searchButton" href="#">
+            <i class="add fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+
+        <div class="sort-box">
+          <button id="sortContacts" class="fa-solid fa-arrow-up-a-z"></button>
+        </div>
+      </div>
+
+      <div id="no-contacts" class="inner-container contacts">
+        <p id="no-contacts-p">No contacts to show.</p>
+      </div>
+
+      <div id="tag-filter" hidden>
+        <p id="filtersList">Filters:</p>
+      </div>
+    </div>
+
+    <div id="contacts-list">
+    </div>
+
+    <div id="form-div" class="contact-form" hidden>
+    </div>
+
+    <script id="formTemplate" type="text/x-handlebars">
+      <h2>{{type}} Contact</h2>
+      <hr>
+      <p class="form_errors"></p>
+
+      <form id="main_form" autocomplete="false">
+        <label for="full_name" data-name="Full Name" class="title">Full Name</label>
+        <input type="text" name="full_name" placeholder="John Doe" value="{{full_name}}" pattern=".+ .+" class="field" maxlength="26" required>
+
+
+        <label for="email" data-name="Email Address" class="title">Email Address</label>
+        <input type="text" name="email" placeholder="someone@example.com" value="{{email}}" class="field" pattern=".+@.+" maxlength="30" required>
+
+        <div id="phone">
+        <div class="labels">
+          <label id="countryLabel" for="phone_code" data-name="Country Code" class="title country">Country Code</label>
+          <label id="phoneLabel" for="phone_number" data-name="Phone Number" class="title phone">Phone Number</label>
+        </div>
+        <div class="inputs">
+          <input id="countryInput" type="text" name="country_code" placeholder="1" value="{{country_code}}" class="field country" maxlength="6">
+
+          <input id="phoneInput" type="text" name="phone_number" placeholder="555-555-5555" value="{{phone_number}}" class="field phone last" 
+          pattern="(\d{3}(-|\s)?\d{3}(-|\s)?\d{4})" maxlength="12" required>
+        </div>
+        </div>
+
+        {{!-- TAG INPUT BOX and MODAL --}}
+        <label for="tags" class="title" data-name="Tags">Tags
+          <span class="limit">(<span class="count"></span> remaining)</span>
+        </label>
+        <div id="tagInputBox" class="content">
+          <div class="buttonIn">
+            <input id="input-tag" name="tags" type="text" placeholder="Hit Tab or Enter after entering a tag name" class="tagInput">
+            <button id="modalBtn">Tag Selector</button>
+          </div>
+          {{!-- MODAL SHOWING ALL TAGS AS CHECKBOXES --}}
+          <div id="checkboxes" class="modal">
+            <div id="modalContent" class="modal-content">
+              <span class="close">&times;</span>
+              <p class="tag_limit_message" hidden>Max number of tags reached for this contact.</p>
+              <p class="no_tags_message" hidden>You have no tags to select from.</p>
+            </div>
+          </div>
+          {{!-- /MODAL --}}
+          <ul></ul>
+        </div>
+
+        <div class="form-actions buttons">
+          <button class="submit">Submit</button>
+          <button class="cancel">Cancel</button>
+        </div>
+      </form>
+    </script>
+    
+    <script id="contactTemplate" type="text/x-handlebars">
+      <div id="{{id}}" class="contact-fields contact-container">
+        <dd class="field-header">{{full_name}}</dd>
+        <dt class="field-title">Phone Number</dt>
+        <dd class="field-value phone">{{formatPhone phone_number}}</dd>
+        <dt class="field-title">Email</dt>
+        <dd class="field-value email">{{email}}</dd>
+        <dt class="field-title">Tags</dt>
+        <dd class="field-value tags"><span class="none">None</span></dd>
+
+        <div class="field-actions">
+          <button data-id="{{id}}" class="contact-field edit fa-sharp fa-solid fa-pen"> Edit</button>
+          <button data-id="{{id}}" class="contact-field delete fa-solid fa-trash-can"> Delete</button>
+        </div>
+      </div>
+    </script>
+
+    <script id="checkbox" type="text/x-handlebars">
+      <label class="form-control">
+        {{#if isChecked}}
+          <input type="checkbox" checked>
+        {{else}}
+          <input type="checkbox">
+        {{/if}}
+        {{tag}}
+      </label>
+    </script>
+
+    <script src="javascripts/app.js"></script>
+  </body>
+</html>
